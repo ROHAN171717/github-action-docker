@@ -3,15 +3,15 @@ name: 'Docker'
 on:
   pull_request:
     types:
-      - closed
+      - closed  # 3 types of pull request:- open, closed, stale
     branches:    
       - 'main'
 
 
 env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  REPOSITORY_NAME: ${{ secrets.REPOSITORY_NAME}}
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }} #xyz
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} #token
+  REPOSITORY_NAME: ${{ secrets.REPOSITORY_NAME }} #docker-action, xyz-repo, etc...
 
 
 
@@ -19,7 +19,7 @@ jobs:
   build_and_push_to_registry:
     name: Build and push Docker image to Docker Hub
     if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #docker-image
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d--%M-%S')"
 
       - name: Build Docker Image
-        run: docker build . --file Dockerfile --tag $DOCKERHUB_USERNAME/$REPOSITORY_NAME:${{ steps.date.outputs.date }}
+        run: docker build . --file Dockerfile --tag $DOCKERHUB_USERNAME/$REPOSITORY_NAME:${{ steps.date.outputs.date }} # steps.date.outputs.date = 12-02-23:18:47
 
       - name: Push Docker Image to Docker Hub
         run: docker push $DOCKERHUB_USERNAME/$REPOSITORY_NAME:${{ steps.date.outputs.date }}
